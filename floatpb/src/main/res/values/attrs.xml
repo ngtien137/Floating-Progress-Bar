@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="FloatingProgressBar">
+        <attr name="fpb_bar_background" format="color"/>
+        <attr name="fpb_bar_selected" format="color"/>
+        <attr name="fpb_bar_height" format="dimension"/>
+        <attr name="fpb_bar_corners_radius" format="dimension"/>
+
+        <attr name="fpb_text_size" format="dimension"/>
+        <attr name="fpb_text_color" format="color"/>
+        <attr name="fpb_text_bottom_spacing" format="dimension"/>
+
+        <attr name="fpb_max" format="float"/>
+        <attr name="fpb_progress" format="float"/>
+    </declare-styleable>
+    
+    <dimen name="def_bar_height">30dp</dimen>
+    
+</resources>

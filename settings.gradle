@@ -1,0 +1,3 @@
+include ':floatpb'
+include ':app'
+rootProject.name = "DemoFloatingProgressBar"
