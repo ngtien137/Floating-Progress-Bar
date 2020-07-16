@@ -10,6 +10,7 @@
         <attr name="fpb_text_size" format="dimension"/>
         <attr name="fpb_text_color" format="color"/>
         <attr name="fpb_text_bottom_spacing" format="dimension"/>
+        <attr name="fpb_text_font" format="reference"/>
 
         <attr name="fpb_max" format="float"/>
         <attr name="fpb_progress" format="float"/>

@@ -2,8 +2,10 @@ package com.chim.floatpb
 
 import android.content.Context
 import android.graphics.*
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -18,7 +20,9 @@ class FloatingProgressBar @JvmOverloads constructor(
     private var viewWidth: Int = 0
     private var viewHeight: Int = 0
 
-    private var paintIndicator = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var paintIndicator = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textAlign = Paint.Align.CENTER
+    }
     private var paintBarBackground = Paint(Paint.ANTI_ALIAS_FLAG)
     private var paintBarSelected = Paint(Paint.ANTI_ALIAS_FLAG)
 
@@ -44,7 +48,7 @@ class FloatingProgressBar @JvmOverloads constructor(
     }
 
     private fun initView(attrs: AttributeSet?) {
-        setLayerType(LAYER_TYPE_SOFTWARE,null)
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
         attrs?.let {
             val ta = context.obtainStyledAttributes(it, R.styleable.FloatingProgressBar)
             barCorners = ta.getDimension(R.styleable.FloatingProgressBar_fpb_bar_corners_radius, 0f)
@@ -63,6 +67,13 @@ class FloatingProgressBar @JvmOverloads constructor(
                 ta.getDimension(R.styleable.FloatingProgressBar_fpb_text_size, 0f)
             textIndicatorSpacing =
                 ta.getDimension(R.styleable.FloatingProgressBar_fpb_text_bottom_spacing, 0f)
+            val fontId = ta.getResourceId(R.styleable.FloatingProgressBar_fpb_text_font, -1)
+            if (fontId != -1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    paintIndicator.typeface = resources.getFont(fontId)
+                } else
+                    paintIndicator.typeface = ResourcesCompat.getFont(context, fontId)
+            }
 
             max = ta.getFloat(R.styleable.FloatingProgressBar_fpb_max, 100f)
             progress = ta.getFloat(R.styleable.FloatingProgressBar_fpb_progress, 0f)
@@ -133,8 +144,28 @@ class FloatingProgressBar @JvmOverloads constructor(
     }
 
     private fun drawView(canvas: Canvas) {
+        if (paintIndicator.textSize > 0f) {
+            val text = "${progress.roundToInt()}%"
+            paintIndicator.getTextBounds(text, 0, text.length, rectIndicator)
+            val yText = rectBarBackground.top - textIndicatorSpacing
+            var xText = rectBarSelected.right - rectIndicator.width() / 2f
+            val minPosition = rectView.left + rectIndicator.width() / 2f
+            val maxPosition = rectView.right - rectIndicator.width() / 2f
+            if (xText < minPosition)
+                xText = minPosition
+            else if (xText > maxPosition)
+                xText = maxPosition
+            canvas.drawText(text, xText, yText, paintIndicator)
+        }
         canvas.drawRoundRect(rectBarBackground, barCorners, barCorners, paintBarBackground)
-        canvas.drawRoundRect(rectBarSelected, barCorners, barCorners, paintBarSelected)
         canvas.clipPath(pathClip)
+        canvas.drawRoundRect(rectBarSelected, barCorners, barCorners, paintBarSelected)
+    }
+
+    fun setProgress(progress: Float) {
+        val p = if (progress < 0) 0f else if (progress > max) max else progress
+        this.progress = p
+        validateBarSelectedWithProgress()
+        invalidate()
     }
 }

@@ -8,14 +8,17 @@
     tools:context=".MainActivity">
 
     <com.chim.floatpb.FloatingProgressBar
+        android:id="@+id/pbLoading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:fpb_bar_height="30dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        app:fpb_progress="10"
-        app:fpb_max="200"
         app:fpb_bar_corners_radius="15dp"
+        app:fpb_bar_height="30dp"
+        app:fpb_max="200"
+        app:fpb_progress="0"
+        app:fpb_text_bottom_spacing="4dp"
+        app:fpb_text_size="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
