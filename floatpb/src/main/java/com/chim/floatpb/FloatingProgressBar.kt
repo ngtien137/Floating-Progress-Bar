@@ -5,8 +5,11 @@ import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import androidx.core.content.res.ResourcesCompat
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 class FloatingProgressBar @JvmOverloads constructor(
@@ -162,10 +165,42 @@ class FloatingProgressBar @JvmOverloads constructor(
         canvas.drawRoundRect(rectBarSelected, barCorners, barCorners, paintBarSelected)
     }
 
-    fun setProgress(progress: Float) {
+    private var anim: ProgressAnimation? = null
+    fun setProgress(progress: Float, animDuration: Long = 0L) {
         val p = if (progress < 0) 0f else if (progress > max) max else progress
-        this.progress = p
-        validateBarSelectedWithProgress()
-        invalidate()
+        if (animDuration <= 0) {
+            this.progress = p
+            validateBarSelectedWithProgress()
+            invalidate()
+        } else {
+            anim?.cancel()
+            anim = ProgressAnimation(this, this.progress, p)
+            anim?.startAnim(animDuration)
+        }
+    }
+
+    class ProgressAnimation(
+        private val progressBar: FloatingProgressBar,
+        private var oldProgress: Float,
+        private var newProgress: Float
+    ) : Animation() {
+        private var currentProgress: Float = 0F
+
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            val progress = oldProgress + (newProgress - oldProgress) * interpolatedTime
+            currentProgress = progress
+            progressBar.setProgress(progress)
+        }
+
+        fun startAnim(duration: Long = 1000) {
+            setDuration(duration)
+            progressBar.startAnimation(this)
+        }
+
+        override fun cancel() {
+            progressBar.setProgress(currentProgress)
+            super.cancel()
+        }
+
     }
 }

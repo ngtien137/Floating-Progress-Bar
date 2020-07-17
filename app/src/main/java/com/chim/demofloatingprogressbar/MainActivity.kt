@@ -2,12 +2,12 @@ package com.chim.demofloatingprogressbar
 
 import android.annotation.SuppressLint
 import android.graphics.PointF
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewConfiguration
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Math.abs
 
 class MainActivity : AppCompatActivity() {
     private var isMoving = false
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                             pbLoading.setProgress(pbLoading.progress - 1)
                         }
                     } else {
-                        if (abs(disMove) >= scaleTouch) {
+                        if (kotlin.math.abs(disMove) >= scaleTouch) {
                             isMoving = true
                         }
                     }
@@ -50,5 +50,10 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    fun startAnim(view: View) {
+        val p = if (pbLoading.progress==0f) pbLoading.max else 0f
+        pbLoading.setProgress(p,2000)
     }
 }

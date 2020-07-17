@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DemoFloatingProgressBar</string>
+    <string name="startanim">start Animation</string>
 </resources>
